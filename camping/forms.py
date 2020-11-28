@@ -3,14 +3,31 @@ from .models import Client
 import psycopg2
 
 class ClientForm(forms.ModelForm):
-    nom_client = forms.CharField(max_length = 30)
-    prenom_client = forms.CharField(max_length = 30)
-    adresse = forms.CharField(max_length = 50)
-    telephone = forms.IntegerField() #MinimumLengthValidator = 9
-    date_de_naissance = forms.DateField()#
-    email = forms.EmailField(label = 'Votre email')
-    password = forms.CharField(max_length = 30,
-                                 widget=forms.PasswordInput())
+    nom_client = forms.CharField(max_length = 30, label = '',
+                    widget = forms.TextInput(attrs={"class": "nom-client",
+                                                "placeholder" : "Nom"}))
+    prenom_client = forms.CharField(max_length = 30, label = '',
+                    widget = forms.TextInput(attrs={"class": "prenom-client",
+                                            "placeholder" : "Prenom"}))
+    adresse = forms.CharField(max_length = 50, label = '',
+                    widget = forms.TextInput(attrs={"class": "adresse",
+                                            "placeholder" : "Adresse"}))
+
+
+    #MinimumLengthValidator = 9
+    telephone = forms.IntegerField(label = '',
+                    widget = forms.TextInput(attrs={"class": "telephone",
+                                        "placeholder" : "Telephone"}))
+    date_de_naissance = forms.DateField(label = '',
+                    widget = forms.TextInput(attrs={"class": "date-naissance",
+                                        "placeholder" : "Date de naissance"}))
+    email = forms.EmailField(label = '',
+                    widget = forms.TextInput(attrs={"class": "adresse",
+                                            "placeholder" : "Email"}))
+    password = forms.CharField(max_length = 30, label = '',
+                                 widget=forms.PasswordInput(
+                                 attrs={"class": "mdp",
+                                    "placeholder" : "Mot de passe"}))
     class Meta:
         model = Client
         fields = ["num_client","nom_client", "prenom_client","adresse",
@@ -23,5 +40,5 @@ class LoginForm(forms.Form):
                                                 attrs={"class": "emailclass",
                                                 "placeholder" : "Email"}))
     password = forms.CharField(label = '' , max_length = 30,
-                            widget=forms.PasswordInput({'class': 'passwordclass',
-                                                        "placeholder" : "Password"}))
+                    widget=forms.PasswordInput({'class': 'passwordclass',
+                                                "placeholder" : "Password"}))

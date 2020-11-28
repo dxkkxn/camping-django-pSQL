@@ -1,23 +1,9 @@
-<html>
-<head>
-    <title> Crypto Currency Web App </title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
-<body>
-    <div class="container">
-        <div class="menu">
-            <ul>
-                <li class="logo"><img src="diamond.png"></li>
-                <li class="active">Home</li>
-                <li>Services</li>
-                <li>Reserverc</li>
-                <li>Contact</li>
-                <li><a href="#" class="signup-btn"><span>Log in</span>
-                </a></li>
-            </ul>
-    </div>
-    <div>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<br>
+  <link rel="stylesheet" href=" {% static 'homestyle.css' %}">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <div class="banner">
         <div class="app-text">
             <h1>CAMPING QWERTY</h1>
@@ -50,4 +36,4 @@
         </ul>
     </div>
 </body>
-</html>
+{% endblock %}

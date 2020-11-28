@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
-<link rel="stylesheet" type = "text/css" href="{% static 'login.css' %}"/>
 {% block content%}
-
+<link rel="stylesheet" type = "text/css" href="{% static 'login.css' %}"/>
+<br>
 <form action = "" method="POST"> {% csrf_token %}
   {{ form.as_p }}
-  <input type="submit" value="Login" />
+  <input class="cta"  type="submit" value="Se connecter" />
+  <a class="cta" href="http://127.0.0.1:8000/register/"> S'enregister</a>
 </form>
-<form action = "http://127.0.0.1:8000/register/" method="GET"> {% csrf_token %}
+<br>
+
+<!-- <form action = "http://127.0.0.1:8000/register/" method="GET"> {% csrf_token %}
   <input type="submit" value="S'enregister" />
-</form>
+</form> -->
 {% endblock %}

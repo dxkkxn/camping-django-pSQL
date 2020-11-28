@@ -6,3 +6,7 @@ form {
     box-sizing: border-box;
   }
 }
+/* input[type=submit] {
+  border: none;
+  border-bottom: 2px solid red;
+} */

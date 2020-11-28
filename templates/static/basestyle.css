@@ -4,8 +4,14 @@
     font-family: sans-serif;
 }
 
-.container {
+
+html{
   animation: bgcolor infinite 20s;
+  height: 100%;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  color: #edf0f1;
+  text-decoration: none;
 }
 @keyframes bgcolor {
   0%
