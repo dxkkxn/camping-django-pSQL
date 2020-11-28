@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Camping</title>
+    <link rel="stylesheet" type = "text/css" href="{% static 'basestyle.css' %}"/>
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+</head>
+  <nav>
+    {% include 'nav_bar.html' %}
+  </nav>
+<div class="container">
+  <body>
+
+      {% block content %}
+        replace me
+      {% endblock %}
+  </body>
+</div>
+</html>

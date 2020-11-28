@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+<link rel="stylesheet" type = "text/css" href="{% static 'login.css' %}"/>
+{% block content%}
+
+<form action = "" method="POST"> {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Login" />
+</form>
+<form action = "http://127.0.0.1:8000/register/" method="GET"> {% csrf_token %}
+  <input type="submit" value="S'enregister" />
+</form>
+{% endblock %}
