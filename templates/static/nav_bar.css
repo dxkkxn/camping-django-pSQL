@@ -14,8 +14,13 @@ header {
 
 .logo {
   cursor: pointer;
+  height: 1px;
 }
-
+.logo img{
+    width: 80px;
+    margin-top: -40px;
+    margin-right: 48px;
+}
 .nav__links a,
 .cta,
 .overlay__content a {

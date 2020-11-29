@@ -22,7 +22,10 @@ def login_create_view(request):
 def client_create_view(request):
     form = ClientForm(request.POST or None)
     if form.is_valid():
-        form.save()
+        try:
+            form.save()
+        except:
+            raise forms.ValidationError("Le mot de passe ou l'email sont incorrects")
         print(form.data['date_de_naissance'], type(form.data['date_de_naissance']))
         return redirect("http://127.0.0.1:8000")
     context ={

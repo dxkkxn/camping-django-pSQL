@@ -1,7 +1,7 @@
 from django.db import models
-
+from .scripts import date_18_years_before
 # Create your models here.
-
+date = date_18_years_before()
 class Client(models.Model):
     num_client = models.AutoField(primary_key = True)
     nom_client = models.CharField(max_length = 30)
@@ -13,6 +13,16 @@ class Client(models.Model):
     email = models.EmailField()
     password= models.CharField(max_length= 30)
 
+    class Meta:
+        db_table = "clients"
+        constraints = [
+            models.CheckConstraint(check=(models.Q(telephone__gte = 100000000,
+                                                    telephone__lt = 1000000000)),
+            name='tel_digits'),
 
-class Test(models.Model):
-    test = models.TextField()
+            models.CheckConstraint(check=(models.Q(date_de_naissance__lte = date)),
+            name='age18ans')
+
+        ]
+
+# and telephone <= 1000000000

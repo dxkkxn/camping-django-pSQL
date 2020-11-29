@@ -16,7 +16,7 @@ class ClientForm(forms.ModelForm):
 
     #MinimumLengthValidator = 9
     telephone = forms.IntegerField(label = '',
-                    widget = forms.TextInput(attrs={"class": "telephone",
+                    widget = forms.NumberInput(attrs={"class": "telephone",
                                         "placeholder" : "Telephone"}))
     date_de_naissance = forms.DateField(label = '',
                     widget = forms.TextInput(attrs={"class": "date-naissance",
@@ -32,6 +32,12 @@ class ClientForm(forms.ModelForm):
         model = Client
         fields = ["num_client","nom_client", "prenom_client","adresse",
                   "telephone", "date_de_naissance", "email", "password"]
+
+    def clean_email(self, *args, **kwargs):
+        email = self.cleaned_data.get("email")
+        if "@gmx" in email:
+            raise forms.ValidationError("pas de gmx")
+        return email
 
 
 
