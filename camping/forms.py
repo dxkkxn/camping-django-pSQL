@@ -35,8 +35,8 @@ class ClientForm(forms.ModelForm):
 
     def clean_email(self, *args, **kwargs):
         email = self.cleaned_data.get("email")
-        if "@gmx" in email:
-            raise forms.ValidationError("pas de gmx")
+        if "@gmail" in email:
+            raise forms.ValidationError("pas de gmail chez nous")
         return email
 
 

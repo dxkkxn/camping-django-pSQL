@@ -1,0 +1,49 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Camping</title>
+    <link rel="stylesheet" type = "text/css" href="{% static 'basestyle.css' %}"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" type = "text/css" href="{% static 'profile.css' %}"/>
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+</head>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type = "text/css" href="{% static 'nav_bar_connect.css' %}">
+</head>
+<body>
+    <header>
+        <a class="logo" href="/"><img src="{% static 'camping.png' %}" alt="logo"></a>
+        <nav>
+            <ul class="nav__links">
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Projects</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </nav>
+        <a class="cta" href="http://127.0.0.1:8000/login">Connecte</a>
+        <p class="menu cta">Menu</p>
+    </header>
+    <div class="overlay">
+        <a class="close">&times;</a>
+        <div class="overlay__content">
+            <a href="#">Services</a>
+            <a href="#">Projects</a>
+            <a href="#">About</a>
+        </div>
+    </div>
+
+  <body>
+    {% if obj == None %}
+      <p>Vous avez pas de reservations, Faite une reservation</p>
+    {% else %}
+      <p> Vous avez une reservation le object.date_reservation</p>
+    {% endif %}
+  </body>
+
+</html>

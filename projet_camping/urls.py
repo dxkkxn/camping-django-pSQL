@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from camping.views import  client_create_view, login_create_view, home_create_view
+from camping.views import client_create_view, login_create_view, home_create_view, profile_create_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', login_create_view),
     path('register/', client_create_view),
+    path('profile/', profile_create_view),
     path('', home_create_view)
 ]
