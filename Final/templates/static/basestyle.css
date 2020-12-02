@@ -1,0 +1,41 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+
+html{
+  animation: bgcolor infinite 20s;
+  height: 100%;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  color: #edf0f1;
+  text-decoration: none;
+}
+@keyframes bgcolor {
+  0%
+  {
+    background: #2ecc71;
+  }
+  20%
+  {
+    background: #8e44ad;
+  }
+  40%
+  {
+    background: #2c3e50;
+  }
+  60%
+  {
+    background: #d35400;
+  }
+  80%
+  {
+    background: #16a085;
+  }
+  100%
+  {
+    background: #e74c3c;
+  }
+}
