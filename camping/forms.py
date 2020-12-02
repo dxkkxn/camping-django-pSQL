@@ -20,7 +20,8 @@ class ClientForm(forms.ModelForm):
                                         "placeholder" : "Telephone"}))
     date_de_naissance = forms.DateField(label = '',
                     widget = forms.TextInput(attrs={"class": "date-naissance",
-                                        "placeholder" : "Date de naissance"}))
+                                        "placeholder" : "Date de naissance",
+                                        "type" : "date"))
     email = forms.EmailField(label = '',
                     widget = forms.TextInput(attrs={"class": "adresse",
                                             "placeholder" : "Email"}))
@@ -48,3 +49,4 @@ class LoginForm(forms.Form):
     password = forms.CharField(label = '' , max_length = 30,
                     widget=forms.PasswordInput({'class': 'passwordclass',
                                                 "placeholder" : "Password"}))
+class Reservation(forms.From):

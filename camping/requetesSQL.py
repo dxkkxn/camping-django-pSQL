@@ -1,7 +1,7 @@
 import psycopg2
 
 def login(user, password):
-    request_sql = """SELECT email, password FROM client WHERE email = %s
+    request_sql = """SELECT email, password FROM responsable WHERE email = %s
                     AND password = %s"""
     conn = psycopg2.connect( host = "localhost",
                             database = "Camping",
@@ -18,8 +18,8 @@ def login(user, password):
         return False
 
 def reservation(num_client):
-    request_sql = """SELECT * FROM reservation NATURAL JOIN client WHERE
-                 num_client = %s"""
+    request_sql = """SELECT * FROM client NATURAL JOIN reservation
+                    NATURAL JOIN client WHERE num_client = %s"""
     conn = psycopg2.connect( host = "localhost",
                             database = "Camping",
                             user = "postgres",
@@ -32,7 +32,8 @@ def reservation(num_client):
     return obj
 
 def search_num_client(email):
-    request_sql = """SELECT num_client FROM client WHERE email = %s"""
+    request_sql = """SELECT num_client FROM client NATURAL JOIN responsable
+                    WHERE email = %s"""
     conn = psycopg2.connect( host = "localhost",
                             database = "Camping",
                             user = "postgres",

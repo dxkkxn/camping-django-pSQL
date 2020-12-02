@@ -26,6 +26,13 @@ class Client(models.Model):
         ]
 
 # and telephone <= 1000000000
+class Responsable:
+    email = models.EmailField()
+    password= models.CharField(max_length= 30)
+    num_client = models.ForeignKey(Client, on_delete = models.CASCADE)
+
+    class Meta:
+        db_table = "responsable"
 
 class Reservation(models.Model):
     num_client = models.ForeignKey(Client, on_delete = models.CASCADE)
@@ -37,3 +44,31 @@ class Reservation(models.Model):
 
     class Meta:
         db_table = "reservation"
+
+class ServicesProposes(models.Model):
+    services_proposes = models.Charfield()
+    prix_suplement    = models.IntegerField()
+
+    class Meta:
+        db_table = "services_proposes"
+
+class ReservationServices(models.Model):
+    num_reservation = models.ForeignKey(Reservation, on_delete = models.CASCADE)
+    services_proposes = models.ForeignKey(ServicesProposes,
+                                            on_delete = models.CASCADE)
+    class Meta:
+        db_table = "services_reservation"
+
+class Fidelite:
+    point_fidelite = models.IntegerField(primary_key = True)
+    reduc_fidelite = models.IntegerField()
+    num_client     = models.ForeignKey(Client, on_delete = models.CASCADE)
+    class Meta:
+        db_table = "fidelite"
+
+class Sport:
+    nom_sport = models.CharField(primary_key = True, max_length = 30)
+    tarif_unite = models.DecimalField(max_digits = 10, decimal_places = 2)
+    class Meta:
+        db_table = "sport"
+    
