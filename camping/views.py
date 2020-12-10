@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import  ClientForm, LoginForm
+from .forms import  ProfilForm, LoginForm
 from datetime import date
 from .requetesSQL import login, reservation, search_num_client
 from .scripts import generation_cle_aleatoire
@@ -24,7 +24,7 @@ def login_create_view(request):
     return render(request, "login.html", context)
 
 def client_create_view(request):
-    form = ClientForm(request.POST or None)
+    form = ProfilForm(request.POST or None)
     if form.is_valid():
         try:
             form.save()
