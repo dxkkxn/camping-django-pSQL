@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content%}
+
+  {% if form1 %}
+  <form action = "" method="POST"> {% csrf_token %}
+    {{ form1.as_p }}
+    <input class="cta"  type="submit" value = "Valider" />
+  </form>
+  {% endif %}
+
+  {% if form2 %}
+    <form action = "" method="POST"> {% csrf_token %}
+      {{ form2.as_p }}
+      <input class="cta"  type="submit" value = "Valider" />
+    </form>
+  {% endif %}
+
+  {% if form3 %}
+    <form action = "" method="POST"> {% csrf_token %}
+      {{ form3.as_p }}
+      <input class="cta"  type="submit" value = "Valider" />
+    </form>
+  {% endif %}
+
+  {% if form4 %}
+    {% for i in nb_personnes%}
+    <form action = "" method="POST"> {% csrf_token %}
+
+        {{ form4.as_p }}
+
+      <input class="cta"  type="submit" value = "Valider" />
+    </form>
+    {% endfor %}
+  {% endif %}
+  <!-- {{ form.as_p}}
+  {% if nb_personnes != None %}
+    <form action = "" method="POST"> {% csrf_token %}
+    {% for i in nb_personnes %}
+        {{ accompagnantform.as_p }}
+    {% endfor %}
+    <input class="cta"  type="submit" value = "Valider" />
+    </form>
+  {% endif %} -->
+{% endblock content %}

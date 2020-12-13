@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+  {% block content %}
+    {% for nom_service, description, prix_suplement in services %}
+      <h1> {{ nom_service }} </h1>
+      <p> {{ description }} <p>
+      <p> Prix du service : {{ prix_suplement }} <p>
+    {% endfor %}
+    <p>
+    <br>
+    NB : Pour adhérer à l'un de ses services, vous devrez le cocher dans
+    la section indiquée lors de la réservation de votre séjour.
+    </p>
+  {% endblock %}

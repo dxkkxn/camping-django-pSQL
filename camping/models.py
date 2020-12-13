@@ -10,10 +10,10 @@ class TypeEmplacement(models.Model):
     class Meta:
         db_table = "type_emplacement"
 
-
 class Emplacement(models.Model):
     num_emplacement  = models.AutoField(primary_key = True)
     type_emplacement = models.ForeignKey(TypeEmplacement,
+                                    db_column = "type_emplacement",
                                     on_delete = models.CASCADE)
     class Meta:
         db_table = "emplacement"
@@ -48,7 +48,8 @@ class OptionLocation(models.Model):
         db_table    = "option_location"
 
 class ServicesProposes(models.Model):
-    services_proposes = models.CharField(max_length = 30)
+    nom_service       = models.CharField(max_length = 30, primary_key = True)
+    description       = models.CharField(max_length = 500)
     prix_suplement    = models.IntegerField()
 
     class Meta:
@@ -65,8 +66,12 @@ class Reservation(models.Model):
     fin_sejour       = models.DateField()
     annulation       = models.BooleanField(default = False)
     presence         = models.BooleanField(default = False)
-    option_location  = models.ForeignKey(OptionLocation, on_delete = models.CASCADE)
-    type_emplacement = models.ForeignKey(TypeEmplacement, on_delete = models.CASCADE)
+    option_location  = models.ForeignKey(OptionLocation,
+                                        db_column = "option_location",
+                                        on_delete = models.CASCADE)
+    type_emplacement = models.ForeignKey(TypeEmplacement,
+                                        db_column = "type_emplacement",
+                                         on_delete = models.CASCADE)
     class Meta:
         db_table = "reservation"
 
@@ -78,8 +83,12 @@ class Client(models.Model):
     telephone         = models.IntegerField()
     date_de_naissance = models.DateField()#
     #Num_carte = models.AutoField()
-    num_emplacement   = models.ForeignKey(Emplacement, on_delete = models.CASCADE)
-    num_reservation   = models.ForeignKey(Reservation, on_delete = models.CASCADE)
+    num_emplacement   = models.ForeignKey(Emplacement,
+                                            db_column = "num_emplacement",
+                                            on_delete = models.CASCADE)
+    num_reservation   = models.ForeignKey(Reservation,
+                                        db_column = "num_reservation",
+                                         on_delete = models.CASCADE)
     class Meta:
         db_table = "client"
 
@@ -92,30 +101,43 @@ class Fidelite(models.Model):
 class Responsable:
     email           = models.EmailField(primary_key = True)
     password        = models.CharField(max_length= 30)
-    num_client      = models.ForeignKey(Client, on_delete = models.CASCADE)
-    points_fidelite = models.ForeignKey(Fidelite, on_delete = models.CASCADE)
-    num_reservation = models.ForeignKey(Reservation, on_delete = models.CASCADE)
+    num_client      = models.ForeignKey(Client, db_column = "num_client",
+                                                on_delete = models.CASCADE)
+    points_fidelite = models.ForeignKey(Fidelite, db_column = "points_fidelite",
+                                        on_delete = models.CASCADE)
+    num_reservation = models.ForeignKey(Reservation,
+                                        db_column = "num_reservation",
+                                        on_delete = models.CASCADE)
     class Meta:
         db_table = "responsable"
 
 class ReservationServices(models.Model):
-    num_reservation = models.ForeignKey(Reservation, db_column = "num_reservation", on_delete = models.CASCADE)
-    services_proposes = models.ForeignKey(ServicesProposes, db_column = "services_proposes",
-                                            on_delete = models.CASCADE)
+    num_reservation = models.ForeignKey(Reservation,
+                                        db_column = "num_reservation",
+                                        on_delete = models.CASCADE)
+    services_proposes = models.ForeignKey(ServicesProposes,
+                                         db_column = "services_proposes",
+                                         on_delete = models.CASCADE)
     class Meta:
         db_table = "reservation_services"
         unique_together = (("num_reservation", "services_proposes"),)
 
-
 class Saison(models.Model):
     code_saison     = models.AutoField(primary_key = True)
     libelle_saison  = models.CharField(max_length = 30)
+    date_com        = models.DateField()
+    date_fin        = models.DateField()
     coef_majoration = models.IntegerField()
     class Meta:
         db_table = "saison"
+
 class ReservationSaison(models.Model):
-    code_saison     = models.ForeignKey(Saison, db_column = "code_saison", on_delete = models.CASCADE)
-    num_reservation = models.ForeignKey(Reservation, db_column = "num_reservation",on_delete = models.CASCADE)
+    code_saison     = models.ForeignKey(Saison,
+                                        db_column = "code_saison",
+                                        on_delete = models.CASCADE)
+    num_reservation = models.ForeignKey(Reservation,
+                                        db_column = "num_reservation",
+                                        on_delete = models.CASCADE)
     class Meta:
         db_table = "resevation_saison"
         unique_together = (("code_saison", "num_reservation"),)
@@ -136,8 +158,12 @@ class Employe(models.Model):
 class Facture(models.Model):
     num_facture     = models.AutoField(primary_key = True)
     date_emission   = models.DateField()
-    num_reservation = models.ForeignKey(Reservation, on_delete = models.CASCADE)
-    id_employe      = models.ForeignKey(Employe, on_delete = models.CASCADE)
+    num_reservation = models.ForeignKey(Reservation,
+                                        db_column = "num_reservation",
+                                        on_delete = models.CASCADE)
+    id_employe      = models.ForeignKey(Employe,
+                                        db_column = "id_employe",
+                                        on_delete = models.CASCADE)
     class Meta:
         db_table = "facture"
 
@@ -148,8 +174,10 @@ class Sport(models.Model):
         db_table = "sport"
 
 class ClientSport(models.Model):
-    nom_sport  = models.ForeignKey(Sport, db_column = "nom_sport",on_delete = models.CASCADE)
-    num_client = models.ForeignKey(Client, db_column = "num_client", on_delete = models.CASCADE)
+    nom_sport  = models.ForeignKey(Sport, db_column = "nom_sport",
+                                    on_delete = models.CASCADE)
+    num_client = models.ForeignKey(Client, db_column = "num_client",
+                                    on_delete = models.CASCADE)
     class Meta:
         db_table = "client_sport"
         unique_together = (("nom_sport", "num_client"),)
@@ -169,15 +197,20 @@ class Intervenant(models.Model):
         db_table = "intervenant"
 
 class SportIntervenant(models.Model):
-    nom_sport      = models.ForeignKey(Sport, db_column = "nom_sport", on_delete = models.CASCADE)
-    id_intervenant = models.ForeignKey(Intervenant, db_column = "id_intervenant",on_delete = models.CASCADE)
+    nom_sport      = models.ForeignKey(Sport, db_column = "nom_sport",
+                                        on_delete = models.CASCADE)
+    id_intervenant = models.ForeignKey(Intervenant,
+                                        db_column = "id_intervenant",
+                                        on_delete = models.CASCADE)
     class Meta:
         db_table = "sport_intervenant"
         unique_together = (("nom_sport", "id_intervenant"),)
 
 class SportMateriel(models.Model):
-    nom_materiel = models.ForeignKey(Materiel, db_column = "nom_materiel",on_delete = models.CASCADE)
-    nom_sport    = models.ForeignKey(Sport, db_column = "nom_sport",on_delete = models.CASCADE)
+    nom_materiel = models.ForeignKey(Materiel, db_column = "nom_materiel",
+                                     on_delete = models.CASCADE)
+    nom_sport    = models.ForeignKey(Sport, db_column = "nom_sport",
+                                     on_delete = models.CASCADE)
     class Meta:
         db_table = "sport_materiel"
         unique_together = (("nom_materiel", "nom_sport"),)
@@ -190,8 +223,10 @@ class SalleDesJeux(models.Model):
         db_table = "salle_des_jeux"
 
 class ClientSalleDesJeux(models.Model):
-    num_client = models.ForeignKey(Client, db_column = "num_client", on_delete = models.CASCADE)
-    ref_jeu    = models.ForeignKey(SalleDesJeux, db_column = "ref_jeu", on_delete = models.CASCADE)
+    num_client = models.ForeignKey(Client, db_column = "num_client",
+                                    on_delete = models.CASCADE)
+    ref_jeu    = models.ForeignKey(SalleDesJeux, db_column = "ref_jeu",
+                                    on_delete = models.CASCADE)
     class Meta:
         db_table = "client_salle_des_jeux"
         unique_together = (("num_client", "ref_jeu"),)
@@ -204,8 +239,11 @@ class ProduitSuperette(models.Model):
         db_table = "produit_superette"
 
 class ClientProduitSuperette(models.Model):
-    num_client = models.ForeignKey(Client, db_column = "num_client",on_delete = models.CASCADE)
-    ref_produit  = models.ForeignKey(ProduitSuperette, db_column = "ref_produit",on_delete = models.CASCADE)
+    num_client = models.ForeignKey(Client, db_column = "num_client",
+                                    on_delete = models.CASCADE)
+    ref_produit  = models.ForeignKey(ProduitSuperette,
+                                     db_column = "ref_produit",
+                                     on_delete = models.CASCADE)
     class Meta:
         db_table = "client_produit_superette"
         unique_together = (("num_client", "ref_produit"),)
@@ -218,8 +256,10 @@ class Karaoke(models.Model):
         db_table = "karaoke"
 
 class ClientKaraoke(models.Model):
-    num_client = models.ForeignKey(Client, db_column = "num_client",on_delete = models.CASCADE)
-    ref_salle    = models.ForeignKey(Karaoke, db_column = "ref_salle",on_delete = models.CASCADE)
+    num_client = models.ForeignKey(Client, db_column = "num_client",
+                                   on_delete = models.CASCADE)
+    ref_salle    = models.ForeignKey(Karaoke, db_column = "ref_salle",
+                                     on_delete = models.CASCADE)
     class Meta:
         db_table = "client_karaoke"
         unique_together = (("num_client", "ref_salle"),)
@@ -232,8 +272,10 @@ class CafeBar(models.Model):
         db_table = "cafe_bar"
 
 class ClientCafeBar(models.Model):
-    num_client = models.ForeignKey(Client, db_column = "num_client", on_delete = models.CASCADE)
-    ref_conso    = models.ForeignKey(CafeBar, db_column = "ref_conso", on_delete = models.CASCADE)
+    num_client = models.ForeignKey(Client, db_column = "num_client",
+                                   on_delete = models.CASCADE)
+    ref_conso    = models.ForeignKey(CafeBar, db_column = "ref_conso",
+                                     on_delete = models.CASCADE)
     class Meta:
         db_table = "client_cafe_bar"
         unique_together = (("num_client", "ref_conso"),)
