@@ -1,6 +1,7 @@
 from django import forms
 from .models import Profil
-from .requetesSQL import email_unique_verif, login, all_type_emplacement
+from .requetesSQL import (email_unique_verif, login, all_type_emplacement,
+                          all_sevices)
 from .scripts import date_18_years_before, date_1_week_after, free_dates_3mois
 
 birthday_min = date_18_years_before()
@@ -90,38 +91,52 @@ class TypeEmplacementResa(forms.Form):
 
     for i in range(len(options)):
         liste.append((options[i][0], options[i][0]))
-    print(liste)
 
     type_emplacement = forms.ChoiceField(label = '', choices = liste,
     widget=forms.Select(attrs={'class': 'check_type_service',}))
 
-class NbPersonnesForm(forms.Form):
+class ResaForm(forms.Form):
     nb_personnes = forms.IntegerField()
-    def __init__(self, max, *args, **kwargs):
-        super(NbPersonnesForm, self).__init__(*args, **kwargs)
+    def __init__(self, max, type_emplacement, qte, *args, **kwargs):
+        super(ResaForm, self).__init__(*args, **kwargs)
         self.fields['nb_personnes'] = forms.IntegerField(label = '',
                     widget = forms.NumberInput(attrs={"class": "nb_personnes",
                                         "placeholder" : "Nombre des personnes",
                                         "max" : max}))
 
+        services = all_sevices()
+        services_liste = []
+        for nom_service, description, prix in services:
+            services_liste.append((nom_service, nom_service +' '+ prix))
+        self.fields['options_locations'] = forms.ChoiceField( label = '',
+        choices = services_liste, widget = forms.CheckboxSelectMultiple(
+                                    attrs = {"class" : "options_locations"}))
 
-    # nb_personnes = forms.IntegerField(label = '',
-    #                 widget = forms.NumberInput(attrs={"class": "nb_personnes",
-    #                                     "placeholder" : "Nombre des personnes",
-    #                                     "max" : 10}))
-    # def clean(self, nb_personnes, max):
-    #     if nb_personnes > max :
-    #         raise forms.ValidationError(
-    #         f"""Le nombre maximal des personnes pour cet type_emplacement
-    #         est de {max}""")
-    #
+
+        options = free_dates_3mois(type_emplacement, qte)
+        liste = []
+        for i in range(len(options)):
+            liste.append((options[i], options[i]))
+
+        self.fields['debut_sejour'] = forms.ChoiceField( label = '',
+        choices = liste, widget = forms.Select(
+                                            attrs = {"class" : "debut_sejour"}))
+
+        self.fields['fin_sejour'] = forms.ChoiceField( label = '',
+        choices = liste, widget = forms.Select(
+                                            attrs = {"class" : "fin_sejour"}))
+
+
+class PaymentForm(forms.Form):
+    payment_acompte = forms.BooleanField(widget = forms.CheckboxInput(
+                                        attrs = {"class" : "payment"}))
 
 class AccompagnantForm(forms.Form):
-    nom_client = forms.CharField(max_length = 30, label = '',
-                    widget = forms.TextInput(attrs={"class": "nom_client",
+    nom_accomp = forms.CharField(max_length = 30, label = '',
+                    widget = forms.TextInput(attrs={"class": "nom_accomp",
                                                 "placeholder" : "Nom"}))
-    prenom_client = forms.CharField(max_length = 30, label = '',
-                    widget = forms.TextInput(attrs={"class": "prenom_client",
+    prenom_accomp = forms.CharField(max_length = 30, label = '',
+                    widget = forms.TextInput(attrs={"class": "prenom_accomp",
                                             "placeholder" : "Prenom"}))
     adresse = forms.CharField(max_length = 50, label = '',
                     widget = forms.TextInput(attrs={"class": "adresse",
@@ -135,36 +150,36 @@ class AccompagnantForm(forms.Form):
                                         "placeholder" : "Date de naissance",
                                         "type" : "date"}))
 
-class ReservationDateForm(forms.Form):
-    def __init__(self, type_emplacement, qte, *args, **kwargs):
-
-        options = free_dates_3mois(type_emplacement, qte)
-        liste = []
-        for i in range(len(options)):
-            liste.append((options[i], options[i]))
-
-        super(ReservationDateForm, self).__init__(*args, **kwargs)
-        self.fields['debut_sejour'] = forms.ChoiceField( label = '',
-        choices = liste, widget = forms.Select(
-                                            attrs = {"class" : "debut_sejour"}))
-
-        self.fields['fin_sejour'] = forms.ChoiceField( label = '',
-        choices = liste, widget = forms.Select(attrs = {"class" : "fin_sejour"}))
-
-    # nb_persones = forms.IntegerField()
-    #
-    # options = free_dates_6mois('Tente', 1)
-    # liste = []
-    #
-    # for i in range(len(options)):
-    #     liste.append((options[i], options[i]))
-    # print(liste)
-    #
-    # debut_sejour = forms.ChoiceField( label = '', choices = liste,
-    #     widget = forms.Select(
-    #         attrs = {"class" : "debut_sejour",
-    #                                     "placeholder" : "Date debut séjour"}))
-    #
-    # fin_sejour = forms.ChoiceField( label = '', choices = liste,
-    #     widget = forms.Select(attrs = {"class" : "fin_sejour",
-    #                                     "placeholder" : "Date fin séjour"}))
+# class ReservationDateForm(forms.Form):
+#     def __init__(self, type_emplacement, qte, *args, **kwargs):
+#
+#         options = free_dates_3mois(type_emplacement, qte)
+#         liste = []
+#         for i in range(len(options)):
+#             liste.append((options[i], options[i]))
+#
+#         super(ReservationDateForm, self).__init__(*args, **kwargs)
+#         self.fields['debut_sejour'] = forms.ChoiceField( label = '',
+#         choices = liste, widget = forms.Select(
+#                                             attrs = {"class" : "debut_sejour"}))
+#
+#         self.fields['fin_sejour'] = forms.ChoiceField( label = '',
+#         choices = liste, widget = forms.Select(attrs = {"class" : "fin_sejour"}))
+#
+#     nb_persones = forms.IntegerField()
+#
+#     options = free_dates_6mois('Tente', 1)
+#     liste = []
+#
+#     for i in range(len(options)):
+#         liste.append((options[i], options[i]))
+#     print(liste)
+#
+#     debut_sejour = forms.ChoiceField( label = '', choices = liste,
+#         widget = forms.Select(
+#             attrs = {"class" : "debut_sejour",
+#                                         "placeholder" : "Date debut séjour"}))
+#
+#     fin_sejour = forms.ChoiceField( label = '', choices = liste,
+#         widget = forms.Select(attrs = {"class" : "fin_sejour",
+#                                         "placeholder" : "Date fin séjour"}))

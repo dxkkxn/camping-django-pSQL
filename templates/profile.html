@@ -39,10 +39,14 @@
     </div>
 
   <body>
-    {% if obj == None %}
-      <p>Vous avez pas de reservations, Faite une reservation</p>
+
+    {% if object == None %}
+      <p>Vous avez pas des reservations, Faites une reservation</p>
+      <a href="#">ici</a>
     {% else %}
-      <p> Vous avez une reservation le object.date_reservation</p>
+      <p> Vous avez une reservation le {{ date_res }} jusqu'à le {{ date_fin }}
+      </p>
+      <a href="#">ANNULER</a>
     {% endif %}
   </body>
 

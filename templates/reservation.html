@@ -23,14 +23,23 @@
   {% endif %}
 
   {% if form4 %}
-    {% for i in nb_personnes%}
     <form action = "" method="POST"> {% csrf_token %}
 
         {{ form4.as_p }}
 
       <input class="cta"  type="submit" value = "Valider" />
     </form>
-    {% endfor %}
+  {% endif %}
+
+  {% if reglement %}
+      <h1> Vous devez payer {{ reglement }} euros </h1>
+      <form action = "" method="POST"> {% csrf_token %}
+        <h1>Un acompte de {{ acompte }} euros  est obligatoire <br>
+            pour valider votre réserve</h1>
+            {{ form5.as_p }}
+        <input class="cta"  type="submit" value = "Payer" />
+        <a class="cta" href="http://127.0.0.1:8000"> Annuler </a>
+      </form>
   {% endif %}
   <!-- {{ form.as_p}}
   {% if nb_personnes != None %}

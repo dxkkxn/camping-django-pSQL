@@ -1,7 +1,25 @@
 import psycopg2
-# from .scripts import first_samedi_sept, last_samedi_juin
-# premier_samedi_sept = first_samedi_sept()
-# dernier_samedi_juin = last_samedi_juin()
+import datetime
+
+datenow = datetime.date.today()
+def last_samedi_juin():
+    current_year = datenow.year
+    for i in range(1,31):
+        june_days = datetime.date(current_year, 6, i)
+        if june_days.weekday() == 5:
+            last_samedi = june_days
+    return last_samedi
+
+def first_samedi_sept():
+    current_year = datenow.year
+    for i in range(1,31):
+        sept_days = datetime.date(current_year, 9, i)
+        if sept_days.weekday() == 5:
+            return sept_days
+    return -1
+
+premier_samedi_sept = first_samedi_sept()
+dernier_samedi_juin = last_samedi_juin()
 
 def insertion_base_info():
     request_sql = """INSERT INTO services_proposes
@@ -48,8 +66,8 @@ def insertion_base_info():
     for i in range(3):
         cur.execute(request_sql, ("Tente",))
         cur.execute(request_sql, ("CampingCar",))
-        cur.execute(request_sql, ("Mobilehome_p",))
-        cur.execute(request_sql, ("Mobilehome_g",))
+        cur.execute(request_sql, ("Mobilehome pétit",))
+        cur.execute(request_sql, ("Mobilehome grand",))
         cur.execute(request_sql, ("Chalets",))
 
     request_sql = """INSERT INTO option_location VALUES (%s, %s) """
@@ -61,6 +79,9 @@ def insertion_base_info():
     coef_majoration) VALUES (%s, %s, %s, %s)"""
     cur.execute(request_sql, ("haut saison", dernier_samedi_juin,
                               premier_samedi_sept, 20))
+
+    cur.execute(request_sql, ("bas saison", premier_samedi_sept, '2020-12-31'
+                              ,0))
     request_sql = """INSERT INTO fidelite VALUES (%s, %s)"""
     cur.execute(request_sql, (0,0))
 
@@ -101,15 +122,15 @@ def login(email, password):
     else:
         return True
 
-def reservation(num_client):
-    request_sql = """SELECT * FROM client NATURAL JOIN reservation
-                    NATURAL JOIN client WHERE num_client = %s"""
+def reservation(id_profil):
+    request_sql = """SELECT * FROM responsable NATURAL JOIN reservation
+                     WHERE id_profil = %s"""
     conn = psycopg2.connect( host = "localhost",
                             database = "Camping",
                             user = "postgres",
                             password = "postgres")
     cur = conn.cursor()
-    cur.execute(request_sql,(num_client,))
+    cur.execute(request_sql,(id_profil,))
     obj = cur.fetchone()
     cur.close()
     conn.close()
@@ -224,6 +245,182 @@ def occuped_dates(type_emplacement):
     conn.close()
 
     return liste
+
+def prix_emplacement(type_emplacement):
+    request_sql = """SELECT prix_journee FROM type_emplacement
+                     WHERE type_emplacement = %s """
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+    cur = conn.cursor()
+    cur.execute(request_sql, (type_emplacement,))
+    obj = cur.fetchone()
+    cur.close()
+    conn.close()
+    return obj[0]
+
+def remise_option(option_location):
+    request_sql = """SELECT remise_option FROM option_location
+                     WHERE option_location = %s """
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+    cur = conn.cursor()
+    cur.execute(request_sql, (option_location,))
+    obj = cur.fetchone()
+    cur.close()
+    conn.close()
+    return obj[0]
+
+def saisons():
+    request_sql = """SELECT (date_com) FROM saison """
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+    cur = conn.cursor()
+    cur.execute(request_sql)
+    obj = cur.fetchall()
+
+    request_sql = """SELECT (date_fin) FROM saison """
+    cur.execute(request_sql)
+    obj1 = cur.fetchall()
+
+    request_sql = "SELECT coef_majoration FROM saison"
+    cur.execute(request_sql)
+    coef = cur.fetchall()
+
+    request_sql = "SELECT code_saison FROM saison"
+    cur.execute(request_sql)
+    saison = cur.fetchall()
+
+    liste = []
+    for i in range(len(obj)):
+        liste.append((saison[i][0], obj[i][0], obj1[i][0], coef[i][0]))
+    cur.close()
+    conn.close()
+    return liste
+
+def remise_fidelite(id_profil):
+    request_sql = """SELECT point_fidelite, reduc_fidelite
+                     FROM responsable NATURAL JOIN fidelite
+                     WHERE id_profil = %s"""
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+    cur = conn.cursor()
+    cur.execute(request_sql,(id_profil,))
+    obj = cur.fetchone()
+    cur.close()
+    conn.close()
+    if obj == None:
+        return (0, 0)
+    else :
+        return obj
+
+def prix_service(service):
+    request_sql = """SELECT prix_suplement
+                     FROM services_proposes
+                     WHERE nom_service = %s"""
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+    cur = conn.cursor()
+    cur.execute(request_sql,(service,))
+    obj = cur.fetchone()[0]
+    cur.close()
+    conn.close()
+    return obj
+
+def insertion(dico):
+    request_sql = """SELECT MAX(num_reservation)
+                     FROM reservation"""
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+    cur = conn.cursor()
+
+    cur.execute(request_sql)
+    obj = cur.fetchone()[0]
+    if obj == None:
+        pk = 0
+    else:
+        pk = obj + 1
+
+    request_sql = """INSERT INTO reservation (num_reservation, nb_personnes,
+    acompte,reglement, reglement_bool, date_reservation, debut_sejour,
+    fin_sejour, annulation, presence, code_saison, option_location,
+    type_emplacement) VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+
+
+
+
+    cur.execute(request_sql,(pk, dico['nb_personnes'], dico['acompte'],
+                            dico['reglement'], False, dico['date_reservation'],
+                            dico['debut_sejour'], dico['fin_sejour'], False,
+                            False, dico['code'], dico['option'],
+                            dico['type_emplacement']))
+
+
+    request_sql = """INSERT INTO reservation_services (num_reservation,
+                    services_proposes) VALUES (%s, %s)"""
+    for service in dico['services']:
+        cur.execute(request_sql, (pk, service))
+
+    request_sql = """INSERT INTO client (nom_client, prenom_client, adresse,
+                    telephone, date_de_naissance, num_reservation) VALUES
+                    (%s, %s, %s, %s, %s, %s)"""
+    i = 0
+    n = len(dico['nom_accomp'])
+    nom_accomp = dico['nom_accomp']
+    prenom_accomp = dico['prenom_accomp']
+    adresse = dico['adresse']
+    telephone = dico['telephone']
+    date_de_naissance = dico['date_de_naissance']
+    while i < n:
+        cur.execute(request_sql,(nom_accomp[i],
+        prenom_accomp[i], adresse[i], telephone[i], date_de_naissance[i], pk))
+        i += 1
+        print('OK')
+
+
+    request_sql = """SELECT * FROM profil WHERE id_profil = %s"""
+    cur.execute(request_sql, (dico['id_profil'],))
+    donnees = cur.fetchall()[0]
+
+    request_sql = """SELECT MAX(num_client) FROM client"""
+    cur.execute(request_sql)
+    num_client = cur.fetchone()[0]
+    print(num_client)
+    if num_client == None:
+        num_client = 0
+    else:
+        num_client += 1
+
+    request_sql = """INSERT INTO client (num_client, nom_client, prenom_client,
+     adresse, telephone, date_de_naissance, num_reservation) VALUES
+     (%s, %s, %s, %s, %s, %s, %s)"""
+    cur.execute(request_sql, (num_client, donnees[1], donnees[2], donnees[3],
+                             donnees[4], donnees[5], pk))
+
+    request_sql = """SELECT email FROM responsable WHERE email = %s"""
+
+    cur.execute(request_sql, (donnees[6],))
+
+    if not(cur.fetchone()[0]):
+        request_sql = """ INSERT INTO responsable VALUES (%s, %s, %s, %s, %s,
+                          %s)"""
+        cur.execute(request_sql, (donnees[6], donnees[7], num_client, pk,
+                dico['fidelite'], dico['id_profil']))
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
 
 # print(login("youssef@benjelloun.com","1234"))

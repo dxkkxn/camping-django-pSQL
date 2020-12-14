@@ -1,6 +1,8 @@
 import random
 import datetime
-from .requetesSQL import occuped_dates
+from .requetesSQL import (occuped_dates, prix_emplacement, remise_option,
+                          saisons, remise_fidelite, prix_service)
+
 
 def generation_cle_aleatoire():
     return random.getrandbits(64)
@@ -13,21 +15,47 @@ def date_18_years_before():
 def date_1_week_after():
     return datenow + datetime.timedelta(days=(7))
 
-def last_samedi_juin():
-    current_year = datenow.year
-    for i in range(1,31):
-        june_days = datetime.date(current_year, 6, i)
-        if june_days.weekday() == 5:
-            last_samedi = june_days
-    return last_samedi
 
-def first_samedi_sept():
-    current_year = datenow.year
-    for i in range(1,31):
-        sept_days = datetime.date(current_year, 9, i)
-        if sept_days.weekday() == 5:
-            return sept_days
-    return -1
+def calcul_reglement_acompte(id_profil, type_emplacement, debut_sejour,
+    fin_sejour, services):
+    prix = prix_emplacement(type_emplacement)
+    debut_sejour = datetime.datetime.strptime(debut_sejour, '%Y-%m-%d')
+    fin_sejour   = datetime.datetime.strptime(fin_sejour, '%Y-%m-%d')
+    debut_sejour = datetime.datetime.date(debut_sejour)
+    fin_sejour   = datetime.datetime.date(fin_sejour)
+    diff = fin_sejour - debut_sejour
+
+    if diff.days > 30 :
+        remise = remise_option('Mois')
+        option = 'Mois'
+    elif diff.days > 7 :
+        remise = remise_option('Semaine')
+        option = 'Semaine'
+    else:
+        remise = remise_option('Jour')
+        option = 'Jour'
+
+    saison = saisons()
+    coef_def = 0
+    for code, date_com, date_fin, coef in saison:
+        if date_com < debut_sejour < date_fin:
+            coef_def = coef
+            code_saison = code
+
+    chosen_services = services
+    for service in chosen_services:
+        prix += prix_service(service)
+
+    fidelite = remise_fidelite(id_profil)
+    remise = coef_def + remise + fidelite[1]
+    total = diff.days * float(prix)
+    major = coef_def/100 * total
+    total = total + major
+    remise = (remise/100) * total
+    total = total - remise
+    acompte = 0.10 * total
+
+    return (datenow, total, acompte, fidelite[0], option, code)
 
 def free_dates_3mois(type_emplacement, qte):
     dates = []
@@ -55,5 +83,3 @@ def free_dates_3mois(type_emplacement, qte):
             dates.remove(key)
 
     return dates
-
-print(free_dates_3mois("Tente", 1))

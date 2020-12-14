@@ -55,6 +55,16 @@ class ServicesProposes(models.Model):
     class Meta:
         db_table = "services_proposes"
 
+class Saison(models.Model):
+    code_saison     = models.AutoField(primary_key = True)
+    libelle_saison  = models.CharField(max_length = 30)
+    date_com        = models.DateField()
+    date_fin        = models.DateField()
+    coef_majoration = models.IntegerField()
+    class Meta:
+        db_table = "saison"
+
+
 class Reservation(models.Model):
     num_reservation  = models.AutoField(primary_key = True)
     nb_personnes     = models.IntegerField()
@@ -72,6 +82,8 @@ class Reservation(models.Model):
     type_emplacement = models.ForeignKey(TypeEmplacement,
                                         db_column = "type_emplacement",
                                          on_delete = models.CASCADE)
+    code_saison     = models.ForeignKey(Saison, db_column = "code_saison",
+                                        on_delete = models.CASCADE)
     class Meta:
         db_table = "reservation"
 
@@ -98,7 +110,7 @@ class Fidelite(models.Model):
     class Meta:
         db_table = "fidelite"
 
-class Responsable:
+class Responsable(models.Model):
     email           = models.EmailField(primary_key = True)
     password        = models.CharField(max_length= 30)
     num_client      = models.ForeignKey(Client, db_column = "num_client",
@@ -107,6 +119,8 @@ class Responsable:
                                         on_delete = models.CASCADE)
     num_reservation = models.ForeignKey(Reservation,
                                         db_column = "num_reservation",
+                                        on_delete = models.CASCADE)
+    id_profil       = models.ForeignKey(Profil, db_column = "id_profil",
                                         on_delete = models.CASCADE)
     class Meta:
         db_table = "responsable"
@@ -122,25 +136,7 @@ class ReservationServices(models.Model):
         db_table = "reservation_services"
         unique_together = (("num_reservation", "services_proposes"),)
 
-class Saison(models.Model):
-    code_saison     = models.AutoField(primary_key = True)
-    libelle_saison  = models.CharField(max_length = 30)
-    date_com        = models.DateField()
-    date_fin        = models.DateField()
-    coef_majoration = models.IntegerField()
-    class Meta:
-        db_table = "saison"
 
-class ReservationSaison(models.Model):
-    code_saison     = models.ForeignKey(Saison,
-                                        db_column = "code_saison",
-                                        on_delete = models.CASCADE)
-    num_reservation = models.ForeignKey(Reservation,
-                                        db_column = "num_reservation",
-                                        on_delete = models.CASCADE)
-    class Meta:
-        db_table = "resevation_saison"
-        unique_together = (("code_saison", "num_reservation"),)
 
 class Employe(models.Model):
     id_employe      = models.AutoField(primary_key = True)
