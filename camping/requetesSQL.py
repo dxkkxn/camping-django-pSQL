@@ -368,8 +368,8 @@ def insertion(dico):
 
 
     request_sql = """INSERT INTO reservation_services (num_reservation,
-                    services_proposes) VALUES (%s, %s)"""
-    for service in dico['services']:
+                    nom_service) VALUES (%s, %s)"""
+    for service in dico['services']: 
         cur.execute(request_sql, (pk, service))
 
     request_sql = """INSERT INTO client (nom_client, prenom_client, adresse,
@@ -385,9 +385,8 @@ def insertion(dico):
     while i < n:
         cur.execute(request_sql,(nom_accomp[i],
         prenom_accomp[i], adresse[i], telephone[i], date_de_naissance[i], pk))
+        conn.commit()
         i += 1
-        print('OK')
-
 
     request_sql = """SELECT * FROM profil WHERE id_profil = %s"""
     cur.execute(request_sql, (dico['id_profil'],))
@@ -408,28 +407,30 @@ def insertion(dico):
     cur.execute(request_sql, (num_client, donnees[1], donnees[2], donnees[3],
                              donnees[4], donnees[5], pk))
 
-    request_sql = """SELECT email FROM responsable WHERE email = %s"""
+    request_sql = """SELECT * FROM responsable WHERE email = %s"""
 
     cur.execute(request_sql, (donnees[6],))
 
-    if not(cur.fetchone()[0]):
+    print(cur.fetchone(), dico['id_profil'])
+    if cur.fetchone() == None:
         request_sql = """ INSERT INTO responsable VALUES (%s, %s, %s, %s, %s,
                           %s)"""
-        cur.execute(request_sql, (donnees[6], donnees[7], num_client, pk,
-                dico['fidelite'], dico['id_profil']))
+        cur.execute(request_sql, (donnees[6], donnees[7], dico['id_profil'], num_client, pk,
+                dico['fidelite']))
 
     conn.commit()
     cur.close()
     conn.close()
 
 def delete_resv(num_reservation):
-    request_sql = """ DELETE FROM reservation WHERE num_reservation = %s """
+    request_sql = """ DELETE FROM reservation CASCADE WHERE num_reservation = %s """
     conn = psycopg2.connect( host = "localhost",
                             database = "Camping",
                             user = "postgres",
                             password = "postgres")
     cur = conn.cursor()
     cur.execute(request_sql,(num_reservation,))
+    conn.commit()
     cur.close()
     conn.close()
     return True

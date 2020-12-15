@@ -69,11 +69,11 @@ class LoginForm(forms.Form):
                     widget=forms.PasswordInput({'class': 'passwordclass',
                                                 "placeholder" : "Password"}))
 
-    # def clean_email(self):
-    #     email = self.cleaned_data.get("email")
-    #     if email_unique_verif(email):
-    #         raise forms.ValidationError("Cet email n'est pas enregistré")
-    #     return email
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if email_unique_verif(email):
+            raise forms.ValidationError("Cet email n'est pas enregistré")
+        return email
 
     def clean(self):
         email = self.cleaned_data.get("email")
@@ -90,7 +90,7 @@ class TypeEmplacementResa(forms.Form):
     options = tuple(all_type_emplacement())
 
     for i in range(len(options)):
-        liste.append((options[i][0], options[i][0]))
+       liste.append((options[i][0], options[i][0]))
 
     type_emplacement = forms.ChoiceField(label = '', choices = liste,
     widget=forms.Select(attrs={'class': 'check_type_service',}))
@@ -107,10 +107,10 @@ class ResaForm(forms.Form):
         services = all_sevices()
         services_liste = []
         for nom_service, description, prix in services:
-            services_liste.append((nom_service, nom_service +' '+ prix))
+           services_liste.append((nom_service, nom_service +' '+ prix))
         self.fields['options_locations'] = forms.ChoiceField( label = '',
         choices = services_liste, widget = forms.CheckboxSelectMultiple(
-                                    attrs = {"class" : "options_locations"}))
+                                   attrs = {"class" : "options_locations"}))
 
 
         options = free_dates_3mois(type_emplacement, qte)

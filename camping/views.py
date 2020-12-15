@@ -4,11 +4,11 @@ from .forms import  (ProfilForm, LoginForm, TypeEmplacementResa, ResaForm,
 from datetime import date
 from .requetesSQL import (login, reservation, search_id_profil,
                           insertion_base_info, all_sevices, personnes_max,
-                          qte_emplacement, insertion)
-from .scripts import calcul_reglement_acompte
+                          qte_emplacement, insertion, delete_resv)
+from .scripts import calcul_reglement_acompte, acompte
 
 id_profil = None
-# insertion_base_info()
+#insertion_base_info()
 
 def login_create_view(request):
     form = LoginForm()
@@ -39,11 +39,15 @@ def home_create_view(request, *args, **kwargs):
     global cpt
     global index
     global info
-
+    global id_profil
     cpt = 0
     index = 0
     info = {}
-    return render(request, "home.html", {})
+    
+    if request.method == 'POST':
+        id_profil = None
+    context = { 'profil' : id_profil }
+    return render(request, "home.html", context )
 
 def profile_create_view(request, *args, **kwargs):
     if id_profil :
@@ -53,14 +57,18 @@ def profile_create_view(request, *args, **kwargs):
         global info
         info = {}
         cpt = 0
+        context = {}
         resv = reservation(id_profil)
-        date_res = resv[11]
-        date_fin = resv[12]
+        print(id_profil)
+        print(resv)
+        if resv != None:
+            date_res = resv[11]
+            date_fin = resv[12]
+            print(resv)
+            context = {"object" : resv, "date_res" : date_res,
+                   "date_fin" : date_fin}
         if request.method == 'POST' :
             return redirect('http://127.0.0.1:8000/')
-
-        context = {"object" : resv, "date_res" : date_res,
-                   "date_fin" : date_fin}
 
         return render(request, "profile.html", context)
 
@@ -69,13 +77,16 @@ def profile_create_view(request, *args, **kwargs):
 
 def resv_annulation_view(request, *args, **kwargs):
     if id_profil:
-        context = {}
         resv = reservation(id_profil)
+        acc = acompte(resv[11])
+        print(resv)
+        context = { 'acompte' : acc }
         if request.method == 'POST':
-            delete_resv(resv[1])
-            return redirect("http://127.0.0.1:8000/profile/")
+            delete_resv(resv[0])
+            print('OK')
+            return redirect ("http://127.0.0.1:8000/profile/")
         return render(request, "reservation_annulation.html", context)
-    return redirect()
+    return redirect("http://127.0.0.1:8000/login/")
 
 cpt = 0
 index = 0

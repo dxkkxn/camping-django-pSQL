@@ -129,12 +129,12 @@ class ReservationServices(models.Model):
     num_reservation = models.ForeignKey(Reservation,
                                         db_column = "num_reservation",
                                         on_delete = models.CASCADE)
-    nom_services = models.ForeignKey(ServicesProposes,
-                                         db_column = "nom_services",
+    nom_service = models.ForeignKey(ServicesProposes,
+                                         db_column = "nom_service",
                                          on_delete = models.CASCADE)
     class Meta:
         db_table = "reservation_services"
-        unique_together = (("num_reservation", "services_proposes"),)
+        unique_together = (("num_reservation", "nom_service"),)
 
 
 

@@ -57,9 +57,12 @@ def calcul_reglement_acompte(id_profil, type_emplacement, debut_sejour,
 
     return (datenow, total, acompte, fidelite[0], option, code)
 
-def acompte(datenow, debut_sejour):
+def acompte( debut_sejour):
+    diff = debut_sejour - datenow
+    if diff.days > 30 :
+        return True 
+    return False
     
-
 
 
 def free_dates_3mois(type_emplacement, qte):

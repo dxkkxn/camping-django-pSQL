@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form action = '.' method = 'POST' > {% crsf_token %}
+<form action = '.' method = 'POST' > {% csrf_token %}
   <h1> Voulez vous vraiment annuler la reservation? </h1>
+  {% if acompte %}
+    <h1> L'accompte vous sera remboursé </h1>
+  {% else %}
+    <h1> L'accompte vous sera pas remboursé </h1>
+  {% endif %}
   <input class="cta"  type="submit" value = "OUI"/>
-  <a href = 'http://127.0.0.1:8000/profile'>Annuler</a>
+  <a href = 'http://127.0.0.1:8000/profile'>Non</a>
 </form>
 {% endblock %}
