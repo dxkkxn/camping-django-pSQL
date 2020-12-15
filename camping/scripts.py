@@ -57,6 +57,11 @@ def calcul_reglement_acompte(id_profil, type_emplacement, debut_sejour,
 
     return (datenow, total, acompte, fidelite[0], option, code)
 
+def acompte(datenow, debut_sejour):
+    
+
+
+
 def free_dates_3mois(type_emplacement, qte):
     dates = []
     date_min_resa = date_1_week_after()

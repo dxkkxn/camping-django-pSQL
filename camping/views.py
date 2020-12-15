@@ -56,13 +56,26 @@ def profile_create_view(request, *args, **kwargs):
         resv = reservation(id_profil)
         date_res = resv[11]
         date_fin = resv[12]
+        if request.method == 'POST' :
+            return redirect('http://127.0.0.1:8000/')
+
         context = {"object" : resv, "date_res" : date_res,
                    "date_fin" : date_fin}
+
         return render(request, "profile.html", context)
+
     else:
         return redirect("http://127.0.0.1:8000/login")
 
-
+def resv_annulation_view(request, *args, **kwargs):
+    if id_profil:
+        context = {}
+        resv = reservation(id_profil)
+        if request.method == 'POST':
+            delete_resv(resv[1])
+            return redirect("http://127.0.0.1:8000/profile/")
+        return render(request, "reservation_annulation.html", context)
+    return redirect()
 
 cpt = 0
 index = 0

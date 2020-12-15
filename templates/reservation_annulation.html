@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form action = '.' method = 'POST' > {% crsf_token %}
+  <h1> Voulez vous vraiment annuler la reservation? </h1>
+  <input class="cta"  type="submit" value = "OUI"/>
+  <a href = 'http://127.0.0.1:8000/profile'>Annuler</a>
+</form>
+{% endblock %}

@@ -422,6 +422,17 @@ def insertion(dico):
     cur.close()
     conn.close()
 
+def delete_resv(num_reservation):
+    request_sql = """ DELETE FROM reservation WHERE num_reservation = %s """
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+    cur = conn.cursor()
+    cur.execute(request_sql,(num_reservation,))
+    cur.close()
+    conn.close()
+    return True
 
 # print(login("youssef@benjelloun.com","1234"))
 # Execute a command: this creates a new table
