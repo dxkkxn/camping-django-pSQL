@@ -369,24 +369,26 @@ def insertion(dico):
 
     request_sql = """INSERT INTO reservation_services (num_reservation,
                     nom_service) VALUES (%s, %s)"""
-    for service in dico['services']: 
+    for service in dico['services']:
         cur.execute(request_sql, (pk, service))
 
     request_sql = """INSERT INTO client (nom_client, prenom_client, adresse,
                     telephone, date_de_naissance, num_reservation) VALUES
                     (%s, %s, %s, %s, %s, %s)"""
-    i = 0
-    n = len(dico['nom_accomp'])
-    nom_accomp = dico['nom_accomp']
-    prenom_accomp = dico['prenom_accomp']
-    adresse = dico['adresse']
-    telephone = dico['telephone']
-    date_de_naissance = dico['date_de_naissance']
-    while i < n:
-        cur.execute(request_sql,(nom_accomp[i],
-        prenom_accomp[i], adresse[i], telephone[i], date_de_naissance[i], pk))
-        conn.commit()
-        i += 1
+    if dico.get('nom_accomp'):
+        i = 0
+        n = len(dico['nom_accomp'])
+        nom_accomp = dico['nom_accomp']
+        prenom_accomp = dico['prenom_accomp']
+        adresse = dico['adresse']
+        telephone = dico['telephone']
+        date_de_naissance = dico['date_de_naissance']
+        while i < n:
+            cur.execute(request_sql,(nom_accomp[i],
+            prenom_accomp[i], adresse[i], telephone[i], date_de_naissance[i],
+            pk))
+            conn.commit()
+            i += 1
 
     request_sql = """SELECT * FROM profil WHERE id_profil = %s"""
     cur.execute(request_sql, (dico['id_profil'],))
@@ -412,11 +414,13 @@ def insertion(dico):
     cur.execute(request_sql, (donnees[6],))
 
     print(cur.fetchone(), dico['id_profil'])
+    print(donnees)
     if cur.fetchone() == None:
-        request_sql = """ INSERT INTO responsable VALUES (%s, %s, %s, %s, %s,
-                          %s)"""
-        cur.execute(request_sql, (donnees[6], donnees[7], dico['id_profil'], num_client, pk,
-                dico['fidelite']))
+        request_sql = """ INSERT INTO responsable (email, password,
+        id_profil, num_client, num_reservation, point_fidelite) VALUES (%s, %s,
+        %s, %s, %s, %s)"""
+        cur.execute(request_sql, (donnees[6], donnees[7], dico['id_profil'],
+                    num_client, pk, dico['fidelite']))
 
     conn.commit()
     cur.close()

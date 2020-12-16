@@ -43,7 +43,7 @@ def home_create_view(request, *args, **kwargs):
     cpt = 0
     index = 0
     info = {}
-    
+
     if request.method == 'POST':
         id_profil = None
     context = { 'profil' : id_profil }
@@ -67,8 +67,6 @@ def profile_create_view(request, *args, **kwargs):
             print(resv)
             context = {"object" : resv, "date_res" : date_res,
                    "date_fin" : date_fin}
-        if request.method == 'POST' :
-            return redirect('http://127.0.0.1:8000/')
 
         return render(request, "profile.html", context)
 
@@ -122,9 +120,28 @@ def reservation_create_view(request, *args, **kwargs):
             info['debut_sejour'] = request.POST.get('debut_sejour')
             info['fin_sejour'] = request.POST.get('fin_sejour')
 
-            form3 = AccompagnantForm()
-            context = {"form3" : form3}
-            cpt += 1
+            if int(nb_personnes) == 0:
+                (date_reservation, reglement, acompte, ptsfidelite,
+                option, code) = calcul_reglement_acompte(
+                id_profil, info['type_emplacement'], info['debut_sejour'],
+                        info['fin_sejour'], info['services'])
+                info['id_profil'] = id_profil
+                info['date_reservation'] = date_reservation
+                info['reglement'] = reglement
+                info['acompte']  =  acompte
+                info['fidelite'] = ptsfidelite
+                info['option'] = option
+                info['code'] = code
+                print(info)
+                form5 = PaymentForm()
+                context = {'reglement' : reglement, 'acompte' : acompte,
+                           'form5': form5 }
+                cpt += 2
+                print(cpt)
+            else:
+                form3 = AccompagnantForm()
+                context = {"form3" : form3}
+                cpt += 1
 
         elif request.method == 'POST' and cpt == 2 :
             nb_personnes = info['nb_personnes']
@@ -162,9 +179,6 @@ def reservation_create_view(request, *args, **kwargs):
                 else:
                     info['date_de_naissance'] = [date_de_naissance]
 
-
-
-
                 if index == nb_personnes - 1 :
                     (date_reservation, reglement, acompte, ptsfidelite,
                     option, code) = calcul_reglement_acompte(
@@ -182,14 +196,16 @@ def reservation_create_view(request, *args, **kwargs):
                     context = {'reglement' : reglement, 'acompte' : acompte,
                                'form5': form5 }
                     cpt += 1
-                    print(cpt)
+
                 else:
                     accompagnantform = AccompagnantForm()
                     context = {"form4" : accompagnantform}
                 index += 1
         elif request.method == 'POST' and cpt == 3 :
-            if request.POST.get('payment_acompte') == 'on':
+            print('ok')
+            if request.POST.get('paiment_acompte') == 'on':
                 insertion(info)
+                print('insertion ok')
                 return redirect("http://127.0.0.1:8000/profile/")
 
         return render(request, "reservation.html", context)

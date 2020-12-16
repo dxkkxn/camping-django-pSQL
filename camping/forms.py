@@ -69,11 +69,6 @@ class LoginForm(forms.Form):
                     widget=forms.PasswordInput({'class': 'passwordclass',
                                                 "placeholder" : "Password"}))
 
-    def clean_email(self):
-        email = self.cleaned_data.get("email")
-        if email_unique_verif(email):
-            raise forms.ValidationError("Cet email n'est pas enregistré")
-        return email
 
     def clean(self):
         email = self.cleaned_data.get("email")
@@ -99,9 +94,10 @@ class ResaForm(forms.Form):
     nb_personnes = forms.IntegerField()
     def __init__(self, max, type_emplacement, qte, *args, **kwargs):
         super(ResaForm, self).__init__(*args, **kwargs)
-        self.fields['nb_personnes'] = forms.IntegerField(label = '',
+        self.fields['nb_personnes'] = forms.IntegerField(label = 'Nombre des accompagnants',
                     widget = forms.NumberInput(attrs={"class": "nb_personnes",
                                         "placeholder" : "Nombre des personnes",
+                                        "min" : 0,
                                         "max" : max}))
 
         services = all_sevices()
@@ -128,7 +124,7 @@ class ResaForm(forms.Form):
 
 
 class PaymentForm(forms.Form):
-    payment_acompte = forms.BooleanField(widget = forms.CheckboxInput(
+    paiment_acompte = forms.BooleanField(widget = forms.CheckboxInput(
                                         attrs = {"class" : "payment"}))
 
 class AccompagnantForm(forms.Form):

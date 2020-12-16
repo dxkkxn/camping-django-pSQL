@@ -64,7 +64,6 @@ class Saison(models.Model):
     class Meta:
         db_table = "saison"
 
-
 class Reservation(models.Model):
     num_reservation  = models.AutoField(primary_key = True)
     nb_personnes     = models.IntegerField()
@@ -135,8 +134,6 @@ class ReservationServices(models.Model):
     class Meta:
         db_table = "reservation_services"
         unique_together = (("num_reservation", "nom_service"),)
-
-
 
 class Employe(models.Model):
     id_employe      = models.AutoField(primary_key = True)
