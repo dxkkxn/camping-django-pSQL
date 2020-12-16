@@ -1,9 +1,33 @@
 {% extends 'base.html' %}
   {% block content %}
+    <h1>  Types D'emplacement </h1> <br>
+    <p> Notre camping propose plusieurs types d'emplacements ayant une capacité et un prix propres. <br>
+        Voici la liste des emplacements proposés : <br> <br>
+        - Emplacements pour tente (6 Places) - 10€ / nuit <br>
+        - Emplacements pour camping/caravane avec électricité (6 Places) - 20€ / nuit <br>
+        - Mobile home (6 places) - 25€ / nuit <br>
+        - Mobile home (8 places) - 35€ / nuit <br>
+        - Chalets (10 places) - 50€ / nuit <br> <br> </p>
+    <h1> Activités / Services </h1> <br>
+    <p> Notre camping propose plusieurs activités / services accessibles à tous, <br>
+        dont le prix est payé via la carte client et répertorié sur la facture <br>
+        de la réservation. Voici la liste des services proposés : <br> <br>
+        - Une salle de jeux en libre accès <br>
+        - Des salles de karaoké (réservables sur des créneaux d’une heure) <br> 
+        - Une supérette <br>
+        - Un café / bar <br>
+        - Une variété de sports : Avec du matériel à louer (la plupart étant dirigés par des intervenants) <br> <br> </p>
+
+
+
+    <h1> Services supplémentaires </h1> <br>
+    <p> Ces services sont acessibles uniquement aux personnes les ayant choisi lors de la réservation. <p>
+    <br>
     {% for nom_service, description, prix_suplement in services %}
-      <h1> {{ nom_service }} </h1>
-      <p> {{ description }} <p>
-      <p> Prix du service : {{ prix_suplement }} <p>
+      <p> - {{ nom_service }} : </p>
+      <p> {{ description }} </p>
+      <p> Prix du service : {{ prix_suplement }} </p>
+      <br>
     {% endfor %}
     <p>
     <br>

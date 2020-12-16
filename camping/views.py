@@ -5,7 +5,8 @@ from datetime import date
 from .requetesSQL import (login, reservation, search_id_profil,
                           insertion_base_info, all_sevices, personnes_max,
                           qte_emplacement, insertion, delete_resv, admin,
-                          ajout_admin, personnes_camping)
+                          ajout_admin, personnes_camping, donnees_resv, 
+                          emplacement_plus_resv)
 from .scripts import calcul_reglement_acompte, acompte
 
 id_profil = None
@@ -250,10 +251,24 @@ def admin_create_view(request):
                 context = { "form" : form }
         if request.POST.get('per'):
             personnes = personnes_camping()
+            if personnes == None:
+                personnes = 0
             context = { "personnes" : personnes }
         if request.POST.get('deco'):
             id_profil = None
             return redirect ('http://127.0.0.1:8000/')
+        if request.POST.get('historique'):
+            historique = donnees_resv()
+            context = {'historique': historique}
+        
+        if request.POST.get('plusempl'):
+            print ('OK')
+            empl = emplacement_plus_resv()
+            print(empl)
+            context = { 'empl' : empl }
+            
         return render(request, 'admin.html', context)
+
+        
     else:
         return redirect('http://127.0.0.1:8000/')

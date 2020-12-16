@@ -11,6 +11,8 @@
 
   <input class="cta"  name = "historique" type="submit"
   value = "HISTORIQUE RESERVATION"/>
+  <input class="cta"  name = "plusempl" type="submit"
+  value = " Emplacement plus reservé "/>
   <input class="cta"  name = "deco" type="submit"
   value = "Se deconnecter"/>
 </form>
@@ -25,7 +27,60 @@
 {% if ok %}
   {{ ok }}
 {% endif %}
-{% if personnes %}
+{% if personnes or personnes == 0 %}
   <p> Il y a {{ personnes }} personnes sur le camping actuellement </p>
+{% endif %}
+
+{% if historique %}
+  <head>
+  <style>
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 15px;
+    text-align: left;
+  }
+  #t01 {
+    width: 100%;    
+    background-color: #f1f1c1;
+  }
+  </style>
+  </head>
+  <body>
+
+  <h2>RESERVATION HISTORIQUE</h2>
+
+  <table style="width:100%">
+   
+      <tr>
+        <th>Num client</th>
+        <th>Nom client</th> 
+        <th>Penom client</th>
+        <th>Date séjour</th> 
+        <th>Fin séjour</th>
+        <th>Type Emplacement </th>
+      </tr>
+      
+      
+      {% for num, nom, prenom, date_sejour, fin_sejour, templ in historique %}
+      <tr>
+        <td>{{ num }}</td>
+        <td> {{ nom }} </td>
+        <td> {{ prenom }} </td>
+        <td> {{ date_sejour }} </td>
+        <td> {{ fin_sejour }} </td>
+        <td> {{ templ }} </td>
+      </tr>
+     {% endfor %}
+    
+  </table>
+  <br>
+  </body>
+{% endif %}
+
+{% if empl %}
+  <h1> L'emplacement le plus reservé est : {{ empl }} </h1>
 {% endif %}
 {% endblock %}

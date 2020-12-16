@@ -474,7 +474,7 @@ def ajout_admin(email):
 def personnes_camping():
     request_sql = """ SELECT count(num_client)
                       FROM client NATURAL JOIN reservation
-                      WHERE debut_sejour > %s """
+                      WHERE debut_sejour <= %s """
     conn = psycopg2.connect( host = "localhost",
                             database = "Camping",
                             user = "postgres",
@@ -485,6 +485,39 @@ def personnes_camping():
     cur.close()
     conn.close()
     return obj
+
+def donnees_resv ():
+
+    request_sql = """ SELECT * FROM reservation_historique """ 
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+
+    cur = conn.cursor()
+    cur.execute(request_sql)
+    obj = cur.fetchall()
+    cur.close()
+    conn.close()
+    return obj
+
+def emplacement_plus_resv():
+    request_sql = """SELECT type_emplacement FROM 
+                    reservation_historique 
+                    Group by type_emplacement
+                    HAVING count(*) >= ALL (select count (*) from reservation_historique
+						   group by type_emplacement) """ 
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+
+    cur = conn.cursor()
+    cur.execute(request_sql)
+    obj = cur.fetchone()
+    cur.close()
+    conn.close()
+    return obj[0]
 # Execute a command: this creates a new table
 # cur.execute("CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);")
 #
