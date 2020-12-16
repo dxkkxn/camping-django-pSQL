@@ -41,11 +41,11 @@
   <body>
 
     {% if object == None %}
-      <p>Vous avez pas des reservations, Faites une reservation
-        <a href="http://127.0.0.1:8000/reservation/">ici</a> 
-      </p>
+      <p>Vous n'avez pas encore réservé, commencez dès maintenant votre
+        réservation</p>
+      <a href="#">ici</a>
     {% else %}
-      <p> Vous avez une reservation le {{ date_res }} jusqu'à le {{ date_fin }}
+      <p> Vous avez validé une réservation pour le {{ date_res }} jusqu'au {{ date_fin }}
       </p>
       <a href = " http://127.0.0.1:8000/resv-annulation/">ANNULER RESERVATION</a>
     {% endif %}

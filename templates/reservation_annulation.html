@@ -2,11 +2,12 @@
 
 {% block content %}
 <form action = '.' method = 'POST' > {% csrf_token %}
-  <h1> Voulez vous vraiment annuler la reservation? </h1>
+  <h1> Souhaitez-vous vraiment annuler votre réservation ? </h1>
   {% if acompte %}
-    <h1> L'accompte vous sera remboursé </h1>
+    <h1> L'acompte vous sera remboursé </h1>
   {% else %}
-    <h1> L'accompte vous sera pas remboursé </h1>
+    <h1> L'acompte ne vous sera pas remboursé compte tenu <br>
+    du délais entre l'annulation et le début du séjour </h1>
   {% endif %}
   <input class="cta"  type="submit" value = "OUI"/>
   <a href = 'http://127.0.0.1:8000/profile'>Non</a>
