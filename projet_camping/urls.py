@@ -18,7 +18,8 @@ from django.urls import path
 from camping.views import (register_create_view, login_create_view,
                             home_create_view, profile_create_view,
                             services_create_view, reservation_create_view,
-                            resv_annulation_view)
+                            resv_annulation_view, login_admin_create_view,
+                            admin_create_view)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,5 +29,7 @@ urlpatterns = [
     path('services/', services_create_view),
     path('reservation/', reservation_create_view),
     path('resv-annulation/', resv_annulation_view),
+    path('login/admin/',login_admin_create_view),
+    path('camping/admin/', admin_create_view),
     path('', home_create_view)
 ]

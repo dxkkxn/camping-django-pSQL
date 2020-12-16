@@ -15,8 +15,10 @@
     </form>
   {% endif %}
 
+{{ i }}
   {% if form3 %}
     <form action = "" method="POST"> {% csrf_token %}
+      <h1> Accompagnant  {{ i }}</h1>
       {{ form3.as_p }}
       <input class="cta"  type="submit" value = "Valider" />
     </form>
@@ -24,7 +26,7 @@
 
   {% if form4 %}
     <form action = "" method="POST"> {% csrf_token %}
-
+          <h1> Accompagnant  {{ i }}</h1>
         {{ form4.as_p }}
 
       <input class="cta"  type="submit" value = "Valider" />

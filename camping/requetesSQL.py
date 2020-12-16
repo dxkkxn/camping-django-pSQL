@@ -439,7 +439,52 @@ def delete_resv(num_reservation):
     conn.close()
     return True
 
-# print(login("youssef@benjelloun.com","1234"))
+def admin(email):
+    request_sql = """ SELECT administrateur FROM profil
+         WHERE email = %s """
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+    cur = conn.cursor()
+    cur.execute(request_sql,(email,))
+    obj = cur.fetchone()[0]
+    cur.close()
+    conn.close()
+    print(obj)
+    if obj == None:
+        return False
+    else :
+        return True
+
+def ajout_admin(email):
+    request_sql = """UPDATE profil
+    set administrateur = TRUE
+    where email = %s """
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+    cur = conn.cursor()
+    cur.execute(request_sql,(email,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+def personnes_camping():
+    request_sql = """ SELECT count(num_client)
+                      FROM client NATURAL JOIN reservation
+                      WHERE debut_sejour > %s """
+    conn = psycopg2.connect( host = "localhost",
+                            database = "Camping",
+                            user = "postgres",
+                            password = "postgres")
+    cur = conn.cursor()
+    cur.execute(request_sql,(datenow,))
+    obj = cur.fetchone()[0]
+    cur.close()
+    conn.close()
+    return obj
 # Execute a command: this creates a new table
 # cur.execute("CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);")
 #

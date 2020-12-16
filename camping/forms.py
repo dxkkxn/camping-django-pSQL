@@ -122,7 +122,6 @@ class ResaForm(forms.Form):
         choices = liste, widget = forms.Select(
                                             attrs = {"class" : "fin_sejour"}))
 
-
 class PaymentForm(forms.Form):
     paiment_acompte = forms.BooleanField(widget = forms.CheckboxInput(
                                         attrs = {"class" : "payment"}))
@@ -146,6 +145,16 @@ class AccompagnantForm(forms.Form):
                                         "placeholder" : "Date de naissance",
                                         "type" : "date"}))
 
+class EmailForm(forms.Form):
+    email = forms.EmailField(label = '', widget = forms.TextInput(
+                                                attrs={"class": "emailclass",
+                                                "placeholder" : "Email"}))
+    def clean(self):
+        email = self.cleaned_data.get("email")
+        print(email)
+        if email_unique_verif(email):
+            raise forms.ValidationError("Cet email n'est pas enregistré sur la base")
+        return email
 # class ReservationDateForm(forms.Form):
 #     def __init__(self, type_emplacement, qte, *args, **kwargs):
 #

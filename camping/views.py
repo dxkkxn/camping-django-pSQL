@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import  (ProfilForm, LoginForm, TypeEmplacementResa, ResaForm,
-                        AccompagnantForm, PaymentForm)
+                        AccompagnantForm, PaymentForm, EmailForm)
 from datetime import date
 from .requetesSQL import (login, reservation, search_id_profil,
                           insertion_base_info, all_sevices, personnes_max,
-                          qte_emplacement, insertion, delete_resv)
+                          qte_emplacement, insertion, delete_resv, admin,
+                          ajout_admin, personnes_camping)
 from .scripts import calcul_reglement_acompte, acompte
 
 id_profil = None
@@ -139,8 +140,9 @@ def reservation_create_view(request, *args, **kwargs):
                 cpt += 2
                 print(cpt)
             else:
+                i = index + 1
                 form3 = AccompagnantForm()
-                context = {"form3" : form3}
+                context = {"form3" : form3, "i" : i}
                 cpt += 1
 
         elif request.method == 'POST' and cpt == 2 :
@@ -198,8 +200,9 @@ def reservation_create_view(request, *args, **kwargs):
                     cpt += 1
 
                 else:
+                    i = index + 2
                     accompagnantform = AccompagnantForm()
-                    context = {"form4" : accompagnantform}
+                    context = {"form4" : accompagnantform, "i" : i}
                 index += 1
         elif request.method == 'POST' and cpt == 3 :
             print('ok')
@@ -217,3 +220,40 @@ def services_create_view(request, *args, **kwargs):
     range1   = range(len(services))
     context = { "services" : services }
     return render(request, "services.html", context)
+
+def login_admin_create_view (request):
+    form = LoginForm()
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        log = login(form.data['email'],form.data['password'])
+        print(admin(form.data['email']))
+        if form.is_valid() and log and admin(form.data['email']) :
+            global id_profil
+            id_profil = form.data['email']
+            return redirect('http://127.0.0.1:8000/camping/admin')
+    context = { 'form' : form }
+    return render(request, 'login_admin.html', context)
+
+def admin_create_view(request):
+    global id_profil
+    context = {}
+    if id_profil and admin(id_profil):
+        if request.POST.get('ajout'):
+            form = EmailForm
+            context = { "form" : form }
+        if request.POST.get('valider'):
+            form = EmailForm(request.POST)
+            if form.is_valid():
+                ajout_admin(form.data['email'])
+                context = {"ok" : "OPERATION REUSSI"}
+            else:
+                context = { "form" : form }
+        if request.POST.get('per'):
+            personnes = personnes_camping()
+            context = { "personnes" : personnes }
+        if request.POST.get('deco'):
+            id_profil = None
+            return redirect ('http://127.0.0.1:8000/')
+        return render(request, 'admin.html', context)
+    else:
+        return redirect('http://127.0.0.1:8000/')

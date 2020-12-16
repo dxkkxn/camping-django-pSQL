@@ -5,12 +5,9 @@
 <br>
 <form action = "" method="POST"> {% csrf_token %}
   {{ form.as_p }}
-  <input class="cta"  type="submit" value="Se connecter" />
-  <a class="cta" href="http://127.0.0.1:8000/register/"> S'enregister</a>
+  <input class="cta"  type="submit" value="Se connecter en tant que administrateur" />
 </form>
-<a  href="http://127.0.0.1:8000/login/admin"> Se connecter en tant que
-administrateur </a>
-<br>
+
 
 <!-- <form action = "http://127.0.0.1:8000/register/" method="GET"> {% csrf_token %}
   <input type="submit" value="S'enregister" />

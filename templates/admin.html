@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content%}
+<h1> ADMINISTRATEUR </h1>
+<form action = '.' method = 'POST' > {% csrf_token %}
+  <input class="cta"  name = "ajout" type="submit"
+  value = "AJOUTER UN ADMINISTRATEUR"/>
+
+  <input class="cta"  name = "per" type="submit"
+  value = "NOMBRE DES PERSONNES SUR LE CAMPING"/>
+
+  <input class="cta"  name = "historique" type="submit"
+  value = "HISTORIQUE RESERVATION"/>
+  <input class="cta"  name = "deco" type="submit"
+  value = "Se deconnecter"/>
+</form>
+{% if form %}
+  <form action = '.' method = 'POST' > {% csrf_token %}
+    {{ form.as_p}}
+  <input class="cta"  name = "valider" type="submit"
+    value = "valider"/>
+  </form>
+{% endif %}
+
+{% if ok %}
+  {{ ok }}
+{% endif %}
+{% if personnes %}
+  <p> Il y a {{ personnes }} personnes sur le camping actuellement </p>
+{% endif %}
+{% endblock %}

@@ -79,3 +79,18 @@ CREATE TRIGGER ajout_reservation_historique
 BEFORE DELETE
 ON reservation FOR EACH ROW
 EXECUTE PROCEDURE ajout_reservation_historique();
+
+
+CREATE ROLE andre
+SUPERUSER
+LOGIN
+PASSWORD '1234';
+
+CREATE ROLE youssef
+SUPERUSER
+LOGIN
+PASSWORD '1234';
+
+UPDATE profil
+set administrateur = TRUE
+where id_profil = 1;
